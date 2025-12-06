@@ -1,8 +1,32 @@
 \begin{thebibliography}{1}
 
-\bibitem{C2}
-C.D. Jones, A.B. Smith, and E.F. Roberts,
-\newblock ``Article title,''
-\newblock in {\em Proceedings Title}. IEEE, 2003, vol.~II, pp. 803--806.
+\bibitem{helke_video}
+Micheal Helke,
+\newblock ``How atopical interfaces work,'' \url{https://design-research.ch/explainer-video},
+\newblock Accessed: 2025-10-26.
+
+\bibitem{apple_3dtouch}
+{Apple Inc.},
+\newblock ``Force touch,'' \url{https://en.wikipedia.org/wiki/Force_Touch},
+\newblock Accessed: 2025-10-26.
+
+\bibitem{google_firm_press}
+{Google Research},
+\newblock ``Sensing force-based gestures on the pixel 4,'' \url{https://research.google/blog/sensing-force-based-gestures-on-the-pixel-4/}, 2020,
+\newblock Accessed: 2025-10-26.
+
+\bibitem{github_repository}
+Amaury Chevoir,
+\newblock ``Deep learning project dtu,'' \url{https://github.com/Ora-ng3/deep-learning-project-dtu}, 2025,
+\newblock Accessed: 2025-12-06.
+
+\bibitem{udl_book}
+Simon~J.D. Prince,
+\newblock {\em Understanding Deep Learning},
+\newblock MIT Press, 2023.
+
+\bibitem{dtu_02456}
+Jes Frellsen,
+\newblock ``02456 deep learning,'' DTU Compute Course, 2025.
 
 \end{thebibliography}

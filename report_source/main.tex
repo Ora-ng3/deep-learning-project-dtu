@@ -2,6 +2,18 @@
 %          02456.sty  - 02456 LaTeX style file adapted from ICASSP
 \documentclass{article}
 \usepackage{amsmath,graphicx,02456,hyperref}
+\usepackage{xurl}
+\renewcommand{\UrlFont}{\small\ttfamily}
+
+\def\thebibliography#1{\section{References}
+The book \textit{Understanding Deep Learning} \cite{udl_book} served as reference for the theory, as well as the DTU course in which this project took place: 02456 Deep Learning \cite{dtu_02456}, by Jes Frellsen.
+\list
+ {[\arabic{enumi}]}{\settowidth\labelwidth{[#1]}\leftmargin\labelwidth
+ \advance\leftmargin\labelsep
+ \usecounter{enumi}}
+ \def\newblock{\hskip .11em plus .33em minus .07em}
+ \sloppy\clubpenalty4000\widowpenalty4000
+ \sfcode`\.=1000\relax}
 
 \toappear{02456 Deep Learning, DTU Compute, Fall 2025}
 
@@ -32,7 +44,7 @@
 % Presentation atopical interfaces -> citer avantages
 % 
 
-From the video \href{https://design-research.ch/explainer-video}{\textit{How Atopical Interfaces work}}, Micheal Helke:
+From the video \textit{How Atopical Interfaces work} \cite{helke_video}, Micheal Helke:
 
 \begin{quote}
 There are two fundamentally different types of user interface. One is topical. That is, the location you engage determines the functions you actuate, no matter what you engage it with, in particular which finger.
@@ -43,8 +55,8 @@ The other type is atopical. Here the finger you engage the interface with determ
 Atopical interfaces offer numerous advantages and could be very useful in some fields. For instance, visually impaired people could navigate a phone whithout having to press at specific locations, which can be complicated for them. The music controls of a car steering wheel could be atopical as well, to avoid reaching for a specific location.
 
 \begin{figure}[htb]
-\includegraphics[width=\columnwidth]{figures/phone_drawing.png}
-\caption{Examples of atopical interface usage (Micheal Helke's video)}
+\includegraphics[width=\columnwidth]{figures/prototype_picture.JPEG}
+\caption{Picture of the current prototype, a phone case}
 \label{fig:atopic_examples}
 \end{figure}
 
@@ -56,13 +68,13 @@ I've been working on this interface for a year and find it really interesting. T
 % \label{fig:atocase}
 % \end{figure}
 
-We can easily detect a firmer press of one finger this way. It has been first done by Apple with \href{https://en.wikipedia.org/wiki/Force_Touch}{3D Touch}, and by Google \textit{firm press}. The latter is briefly explained in \href{https://research.google/blog/sensing-force-based-gestures-on-the-pixel-4/}{this blog post}. In both cases the firm press is not used for a specific action, but to speed up a long press action. It makes it hard to really experience how it would feel like.
+We can easily detect a firmer press of one finger this way. It has been first done by Apple with 3D Touch \cite{apple_3dtouch}, and by Google \textit{firm press}. The latter is briefly explained in this blog post \cite{google_firm_press}. In both cases the firm press is not used for a specific action, but to speed up a long press action. It makes it hard to really experience how it would feel like.
 
 Furthermore, we're in a different situation, because all the fingers are laid at the same time, and on opposite sides. So even though only one finger is \textit{instructed} (that is voluntarily pressed by the user), the fingers on the opposite side are pressing as well.
 
 This makes it complicated to detect \textit{which} finger is pressing, in particular with deterministic algorithms. These make a correct detection approximately 80\% of the time, the rest being false positive, false negative, or inversions. They don't generalize well to other users. This is highly undesirable for a satisfying user experience, and machine learning could help improve this.
 
-The goal is therefore to train a neural network on the usage data of the prototype, so that it can predict in real time if a finger is intentionally pressed. All the code for this project can be find on GitHub ()
+The goal is therefore to train a neural network on the usage data of the prototype, so that it can predict in real time if a finger is intentionally pressed. All the code for this project can be find on GitHub \cite{github_repository}.
 
 % The data gathered contains intensity of discharge and position for each fingers, and was labeled in real-time using an event-driven method. The neural network should be as light as possible because it has to run in real-time, and eventually on device.
 
@@ -83,13 +95,6 @@ We can see these two problematics in \autoref{fig:pinky_press}. Even though only
 \label{fig:pinky_press}
 \end{figure}
 
-Other factors can add noise and uncertainties to the intensities :
-\begin{itemize}
-  \item A change in handling of the prototype can suddenly increase the discharge intensity of a finger, without it pressing harder or lighter. That's because it's contact area can change whether how it's laid on the prototype. A finger laid on its side doesn't have as much contact area as a one on its tip.
-  \item Fingers don't all have the same size. For instance the thumb is bigger than the pinky, so there's a big difference in discharge intensity between fingers, even at equal pressure.
-  \item Similarly, fingers don't all have the same softness. For instance, the thumb is softer than the pinky. The intensity can therefore vary greatly for some fingers, and little for others.
-  \item Fingers and handlings characteristics vary between users.
-\end{itemize}
 
 All of these patterns, interactions and irregularities are hard to predict with a deterministic algorithm, while a neural network is very well suited for this type of problems.
 
@@ -204,6 +209,8 @@ To detect better those "weird" presses, the dataset should be expanded by more p
 
 For the next version of this machine learning method, I'll try to gather more diverse data as it will noticeably improve the detection.
 
+\vfill
+\pagebreak
 
 \section{Conclusion}
 
@@ -224,10 +231,10 @@ Frellsen, the teacher of the course, for accepting my project and giving me some
 
 % Use footnotes sparingly (or not at all!) and place them at the bottom of the column on the page on which they are referenced. Use Times 9-point type, single-spaced. To help your readers, avoid using footnotes altogether and include necessary peripheral observations in the text (within parentheses, if you prefer, as in this sentence).
 
-\section{References}
-\label{sec:ref}
+% \section{References}
+% \label{sec:ref}
 
-List and number all bibliographical references at the end of the paper. References may be numbered (either alphabetically or in order of appearance) or follow the author–year citation style (e.g., using the \texttt{natbib} package). If you use a numeric style, cite references using square brackets, e.g., \cite{C2}. If you use an author–year style, cite using round brackets.
+% List and number all bibliographical references at the end of the paper. References may be numbered (either alphabetically or in order of appearance) or follow the author–year citation style (e.g., using the \texttt{natbib} package). If you use a numeric style, cite references using square brackets, e.g., \cite{C2}. If you use an author–year style, cite using round brackets.
 
 \bibliographystyle{IEEEbib}
 \bibliography{template}
