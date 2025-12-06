@@ -1,15 +1,15 @@
 # Fdb version 4
-["bibtex output/main"] 1764984341.64489 "output/main.aux" "output/main.bbl" "output/main" 1764984409.81137 0
+["bibtex output/main"] 1764984341.64489 "output/main.aux" "output/main.bbl" "output/main" 1764985556.66256 0
   "./IEEEbib.bst" 1764879952 17903 9ff833f4bf67f47893e44ee17b52d211 ""
-  "./template.bib" 1764984322 1124 87176aaf04603a654869db691affc84c ""
-  "output/main.aux" 1764984409 3736 7202d8cc859b85e661084fbeebc327ba "pdflatex"
+  "./template.bib" 1764984508 1124 87176aaf04603a654869db691affc84c ""
+  "output/main.aux" 1764985556 3736 7202d8cc859b85e661084fbeebc327ba "pdflatex"
   (generated)
   "output/main.bbl"
   "output/main.blg"
   (rewritten before read)
-["pdflatex"] 1764984409.0176 "c:/Users/amaury/Desktop/DTU/Deep Learning/report_source/main.tex" "output/main.pdf" "main" 1764984409.81228 0
+["pdflatex"] 1764985555.81842 "c:/Users/amaury/Desktop/DTU/Deep Learning/report_source/main.tex" "output/main.pdf" "main" 1764985556.6632 0
   "02456.sty" 1764921645 9030 b3f4c2cbdf44a1c8991cecbb885a68df ""
-  "c:/Users/amaury/Desktop/DTU/Deep Learning/report_source/main.tex" 1764984407 19050 93f3b7be6c01bae2f5ae15e8ea49d9de ""
+  "c:/Users/amaury/Desktop/DTU/Deep Learning/report_source/main.tex" 1764985554 19074 05d0c73c77209c72250c0a5cd24c547f ""
   "c:/texlive/2025/texmf-dist/fonts/enc/dvips/base/8r.enc" 1762356332 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1764880705 960 379cc0019370a9e0208a0a3f949f847a ""
   "c:/texlive/2025/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1764880705 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -105,10 +105,10 @@
   "figures/pinky_events_report.pdf" 1764948853 16027 2c0fadb61335b4145c6b9785fdee063e ""
   "figures/prototype_picture.JPEG" 1764983630 677090 8bc75ea13639114ab7ffa7309e9d11bd ""
   "figures/window_size_analysis.pdf" 1764943679 33369 7bc5fddf8eded0305a931b4c88caf07e ""
-  "main.tex" 1764984407 19050 93f3b7be6c01bae2f5ae15e8ea49d9de ""
-  "output/main.aux" 1764984409 3736 7202d8cc859b85e661084fbeebc327ba "pdflatex"
+  "main.tex" 1764985554 19074 05d0c73c77209c72250c0a5cd24c547f ""
+  "output/main.aux" 1764985556 3736 7202d8cc859b85e661084fbeebc327ba "pdflatex"
   "output/main.bbl" 1764984341 978 4aa734b7701108770f03b5a39ae89bdd "bibtex output/main"
-  "output/main.out" 1764984409 2013 f0145097b622ae79f734ff6c9c3f2c4a "pdflatex"
+  "output/main.out" 1764985556 2013 f0145097b622ae79f734ff6c9c3f2c4a "pdflatex"
   (generated)
   "output/main.aux"
   "output/main.log"

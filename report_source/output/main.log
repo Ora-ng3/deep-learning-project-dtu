@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.5)  6 DEC 2025 02:26
+This is pdfTeX, Version 3.141592653-2.6-1.40.28 (TeX Live 2025) (preloaded format=pdflatex 2025.11.5)  6 DEC 2025 02:45
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -302,12 +302,15 @@ Underfull \hbox (badness 1019) in paragraph at lines 170--171
 \OT1/ptm/m/n/10 some pa-ram-e-ters which could be re-dun-dant on mul-ti-ple
  []
 
+
+Underfull \vbox (badness 1142) has occurred while \output is active []
+
 <figures/CNN_tex_visualizer.pdf, id=125, 508.87816pt x 136.98177pt>
 File: figures/CNN_tex_visualizer.pdf Graphic file (type pdf)
 <use figures/CNN_tex_visualizer.pdf>
 Package pdftex.def Info: figures/CNN_tex_visualizer.pdf  used on input line 177.
 (pdftex.def)             Requested size: 244.6937pt x 65.86754pt.
-[3 <./figures/FCNN_tex_visualizer.pdf> <./figures/window_size_analysis.pdf> <./figures/CNN_tex_visualizer.pdf>]
+ [3 <./figures/FCNN_tex_visualizer.pdf> <./figures/window_size_analysis.pdf> <./figures/CNN_tex_visualizer.pdf>]
 <figures/Residual_CNN_tex_visualizer.pdf, id=173, 501.18042pt x 275.97302pt>
 File: figures/Residual_CNN_tex_visualizer.pdf Graphic file (type pdf)
 <use figures/Residual_CNN_tex_visualizer.pdf>
@@ -336,7 +339,7 @@ Here is how much of TeX's memory you used:
  36 hyphenation exceptions out of 8191
  75i,14n,79p,762b,513s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cmextra/cmex8.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb><c:/texlive/2025/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb><c:/texlive/2025/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb><c:/texlive/2025/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><c:/texlive/2025/texmf-dist/fonts/type1/urw/times/utmr8a.pfb><c:/texlive/2025/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on output/main.pdf (5 pages, 855980 bytes).
+Output written on output/main.pdf (5 pages, 856015 bytes).
 PDF statistics:
  247 PDF objects out of 1000 (max. 8388607)
  177 compressed objects within 2 object streams
