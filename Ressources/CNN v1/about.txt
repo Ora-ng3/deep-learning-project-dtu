@@ -1,0 +1,11 @@
+First CNN, nothing particular
+No weight on the loss function
+
+True Positives:  0
+False Positives: 0
+True Negatives:  8987
+False Negatives: 463
+------------------------------
+Precision: 0.0000
+Recall:    0.0000
+F1 Score:  0.0000

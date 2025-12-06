@@ -1,0 +1,308 @@
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import numpy as np
+import tensorflow as tf
+from keras import models, layers
+from pathlib import Path
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix
+import time
+import seaborn as sns
+
+# Paths
+CURRENT_DIR = Path(__file__).parent.resolve()
+DATASET_PATH = CURRENT_DIR.parent / "data" / "dataset" / "dataset_scale_25k.npz"
+MODEL_PATH = CURRENT_DIR / "separated_fcnn_model.keras"
+OUTPUT_DIR = CURRENT_DIR / "test_results"
+OUTPUT_DIR.mkdir(exist_ok=True)
+
+WINDOW_SIZE = 10
+
+THRESHOLD = 0.5
+TOLERANCE = 1
+
+FINGER_NAMES = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky']
+
+def build_separated_fcnn_model(input_shape):
+    # Input shape: (WINDOW_SIZE, 6)
+    inputs = layers.Input(shape=input_shape)
+    
+    # 1. Discard the 6th sensor (Palm) -> Keep first 5
+    # Shape: (batch, WINDOW_SIZE, 5)
+    x = layers.Lambda(lambda t: t[:, :, :5])(inputs)
+    
+    # 2. Process each finger separately
+    finger_outputs = []
+    
+    for i in range(5):
+        # Extract finger i: (batch, WINDOW_SIZE, 1)
+        finger_input = layers.Lambda(lambda t: t[:, :, i:i+1])(x)
+        
+        # Flatten: (batch, WINDOW_SIZE)
+        flat = layers.Flatten()(finger_input)
+        
+        # FCNN Branch
+        # 10 -> 16 -> 16 -> 1
+        branch = layers.Dense(16, activation='relu')(flat)
+        branch = layers.Dense(16, activation='relu')(branch)
+        out = layers.Dense(1, activation='sigmoid')(branch)
+        
+        finger_outputs.append(out)
+        
+    # 3. Concatenate outputs: (batch, 5)
+    outputs = layers.Concatenate()(finger_outputs)
+    
+    model = models.Model(inputs=inputs, outputs=outputs)
+    return model
+
+def load_data(path):
+    if not path.exists():
+        raise FileNotFoundError(f"Dataset not found at {path}")
+    data = np.load(path)
+    return data
+
+def compute_indices(lengths, window_size):
+    indices = []
+    current_offset = 0
+    for length in lengths:
+        # Valid start indices for this segment: 0 to length - window_size
+        if length >= window_size:
+            # relative indices
+            rel_indices = np.arange(length - window_size + 1)
+            # absolute indices
+            abs_indices = rel_indices + current_offset
+            indices.extend(abs_indices)
+        current_offset += length
+    return np.array(indices, dtype=np.int32)
+
+def get_window(X_frames, y_frames, index, window_size=WINDOW_SIZE):
+    X = X_frames[index : index+window_size]
+    y_seq = y_frames[index : index+window_size]
+    y_last = y_frames[index + window_size - 1]
+    return X, y_seq, y_last
+
+def plot_worst_windows(X_val_frames, y_val_frames, val_indices, model, fp_indices, fn_indices, window_size=WINDOW_SIZE):
+    """
+    Plots 5 FP and 5 FN examples.
+    Shows the window used for prediction (0 to W) and the following window (W to 2W).
+    """
+    
+    # Helper to plot a list of indices
+    def plot_indices(indices, title_prefix):
+        for i, idx in enumerate(indices[:5]): # Take first 5
+            # We want to show [idx : idx + 2*window_size]
+            # Check bounds
+            if idx + 2*window_size > len(X_val_frames):
+                continue
+                
+            X_context = X_val_frames[idx : idx + 2*window_size]
+            y_context = y_val_frames[idx : idx + 2*window_size]
+            
+            # Prediction point is at idx + window_size - 1 (relative to X_val_frames)
+            # Relative to X_context, it is at index window_size - 1
+            pred_idx_rel = window_size - 1
+            
+            # Get prediction for this specific window
+            X_input = X_val_frames[idx : idx + window_size]
+            # Reshape for FCNN: (1, window_size, 6)
+            X_input_batch = np.expand_dims(X_input, axis=0)
+            pred_prob = model.predict(X_input_batch, verbose=0)[0]
+            pred_class = (pred_prob > THRESHOLD).astype(int)
+            
+            # True label at prediction point
+            y_true_at_pred = y_val_frames[idx + window_size - 1]
+            
+            # Plot
+            fig, axes = plt.subplots(5, 1, figsize=(10, 12), sharex=True)
+            frames = np.arange(len(X_context))
+            
+            X_T = X_context.T
+            
+            for f, ax in enumerate(axes):
+                # Intensity
+                ax.plot(frames, X_T[f], label='Intensity', color='blue', alpha=0.6)
+                
+                # True Label Sequence
+                ax.plot(frames, y_context.T[f], label='True Label', color='green', linestyle='--', linewidth=2)
+                
+                # Prediction Point Marker
+                ax.axvline(x=pred_idx_rel, color='gray', linestyle=':', alpha=0.5)
+                
+                # True Label at Pred Point
+                ax.scatter(pred_idx_rel, y_true_at_pred[f], color='green', s=100, marker='o', label='True')
+                
+                # Predicted
+                ax.scatter(pred_idx_rel, pred_prob[f], color='orange', s=100, marker='x', label='Pred Prob')
+                ax.scatter(pred_idx_rel, pred_class[f], color='red', s=50, marker='.', label='Pred Class')
+                
+                ax.set_ylabel(FINGER_NAMES[f])
+                ax.set_ylim(-0.1, 1.1)
+                if f == 0:
+                    ax.legend(loc='upper right')
+            
+            plt.suptitle(f"{title_prefix} Example {i+1} (Window Start: {idx})")
+            plt.tight_layout()
+            plt.savefig(OUTPUT_DIR / f"{title_prefix.lower().replace(' ', '_')}_{i}.png")
+            plt.close()
+
+    if len(fp_indices) > 0:
+        print(f"Plotting {min(5, len(fp_indices))} False Positives...")
+        plot_indices(fp_indices, "False Positive")
+    
+    if len(fn_indices) > 0:
+        print(f"Plotting {min(5, len(fn_indices))} False Negatives...")
+        plot_indices(fn_indices, "False Negative")
+
+def main():
+    # Load data
+    print("Loading data...")
+    data = load_data(DATASET_PATH)
+    X_val_frames = data['X_val']
+    y_val_frames = data['y_val']
+    val_lengths = data['val_lengths']
+    
+    # Compute indices
+    val_indices = compute_indices(val_lengths, WINDOW_SIZE)
+    
+    # Load model
+    print(f"Loading model from {MODEL_PATH}...")
+    # model = models.load_model(MODEL_PATH, safe_mode=False)
+    model = build_separated_fcnn_model((WINDOW_SIZE, 6))
+    model.load_weights(MODEL_PATH)
+    
+    # Evaluate with Tolerance
+    print(f"Evaluating with tolerance ({TOLERANCE} frames)...")
+    
+    tp_tol = 0
+    fp_tol = 0
+    fn_tol = 0
+    tn_tol = 0
+    
+    fp_indices = [] # Store indices of False Positives
+    fn_indices = [] # Store indices of False Negatives
+    
+    # Batch prediction for speed
+    batch_size = 1024
+    num_batches = int(np.ceil(len(val_indices) / batch_size))
+    
+    all_preds = []
+    all_indices = []
+    
+    # 1. Get all predictions first
+    for b in range(num_batches):
+        batch_idx = val_indices[b*batch_size : (b+1)*batch_size]
+        X_batch = []
+        for idx in batch_idx:
+            X_batch.append(X_val_frames[idx : idx+WINDOW_SIZE])
+        
+        X_batch = np.array(X_batch)
+        preds = model.predict(X_batch, verbose=0)
+        all_preds.append(preds)
+        all_indices.append(batch_idx)
+        
+    all_preds = np.concatenate(all_preds)
+    all_indices = np.concatenate(all_indices)
+    
+    # 2. Calculate Metrics with Tolerance
+    # We iterate through each prediction
+    for i, idx in enumerate(all_indices):
+        pred_probs = all_preds[i]
+        pred_classes = (pred_probs > THRESHOLD).astype(int)
+        
+        # True label at the end of the window
+        target_idx = idx + WINDOW_SIZE - 1
+        y_true = y_val_frames[target_idx]
+        
+        # Check each finger independently
+        for f in range(5):
+            p = pred_classes[f]
+            t = y_true[f]
+            
+            if p == 1 and t == 1:
+                tp_tol += 1
+            elif p == 0 and t == 0:
+                tn_tol += 1
+            elif p == 1 and t == 0:
+                # Potential FP. Check tolerance.
+                # Look for a '1' in y_val_frames around target_idx
+                # Range: [target_idx - TOLERANCE, target_idx + TOLERANCE]
+                # Check bounds
+                start_check = max(0, target_idx - TOLERANCE)
+                end_check = min(len(y_val_frames), target_idx + TOLERANCE + 1) # +1 for inclusive range +1 for slice
+                
+                nearby_labels = y_val_frames[start_check:end_check, f]
+                if 1 in nearby_labels:
+                    tp_tol += 1 # Tolerant TP
+                else:
+                    fp_tol += 1
+                    if len(fp_indices) < 100: # Collect some candidates
+                        fp_indices.append(idx)
+                        
+            elif p == 0 and t == 1:
+                # Potential FN. Check tolerance.
+                # Look for a '0' in y_val_frames around target_idx?
+                # Wait, user said: "check what's the distance to the closest same label."
+                # If Pred=0, we look for 0. If found nearby, it's a TN?
+                # "If it's only one frame, it's considered as a tolerant true positive or true negative."
+                
+                start_check = max(0, target_idx - TOLERANCE)
+                end_check = min(len(y_val_frames), target_idx + TOLERANCE + 1)
+                
+                nearby_labels = y_val_frames[start_check:end_check, f]
+                if 0 in nearby_labels:
+                    tn_tol += 1 # Tolerant TN
+                else:
+                    fn_tol += 1
+                    if len(fn_indices) < 100:
+                        fn_indices.append(idx)
+
+    total = tp_tol + fp_tol + fn_tol + tn_tol
+    # Avoid division by zero
+    if total == 0: total = 1
+    
+    # Plot Worst Windows
+    # Filter indices to unique ones to avoid plotting same window multiple times (if multiple fingers failed)
+    fp_indices = sorted(list(set(fp_indices)))
+    fn_indices = sorted(list(set(fn_indices)))
+    
+    plot_worst_windows(X_val_frames, y_val_frames, val_indices, model, fp_indices, fn_indices)
+    
+    print("Done.")
+    
+    # Use tolerant metrics for the final report
+    tn, fp, fn, tp = tn_tol, fp_tol, fn_tol, tp_tol
+    
+    # Construct confusion matrix manually for plotting
+    cm = np.array([[tn, fp], [fn, tp]])
+    
+    # Custom total as requested (ignoring TN for percentage calculation)
+    total_relevant = fp + fn + tp
+    if total_relevant == 0: total_relevant = 1
+
+    print(f"\n=== Confusion Matrix (Tolerance = {TOLERANCE} frame) ===")
+    #print(f"True Negatives: {tn} ({tn/total_relevant*100:.2f}%)")
+    print(f"False Positives: {fp} ({fp/total_relevant*100:.2f}%)")
+    print(f"False Negatives: {fn} ({fn/total_relevant*100:.2f}%)")
+    print(f"True Positives: {tp} ({tp/total_relevant*100:.2f}%)")
+    
+    precision = tp / (tp + fp + 1e-7)
+    recall = tp / (tp + fn + 1e-7)
+    f1 = 2 * (precision * recall) / (precision + recall + 1e-7)
+    
+    print(f"Precision: {precision:.4f}")
+    print(f"Recall:    {recall:.4f}")
+    print(f"F1 Score:  {f1:.4f}")
+    
+    # Save CM plot
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=['Not Pressed', 'Pressed'], 
+                yticklabels=['Not Pressed', 'Pressed'])
+    plt.title('Confusion Matrix (Separated FCNN) - Tolerant')
+    plt.ylabel('True Label')
+    plt.xlabel('Predicted Label')
+    plt.savefig(OUTPUT_DIR / "confusion_matrix_separated_fcnn.png")
+    print("Confusion matrix saved.")
+
+if __name__ == "__main__":
+    main()

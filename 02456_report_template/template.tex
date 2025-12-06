@@ -1,0 +1,127 @@
+% Based on template for ICASSP-2010 paper; to be used with:
+%          02456.sty  - 02456 LaTeX style file adapted from ICASSP
+\documentclass{article}
+\usepackage{amsmath,graphicx,02456}
+
+\toappear{02456 Deep Learning, DTU Compute, Fall 2025}
+
+% Title.
+% ------
+\title{Template for projects in 02456}
+
+% Author names and student numbers
+% --------------------------------
+\name{%
+  \begin{tabular}{c}
+    Anders Andersen (S123456), Bent Bentsen (S123457) \\
+    Christian Christensen (S123457), Ditte Dittesen (S123458)
+  \end{tabular}
+}
+\address{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+  The abstract should appear at the top of the left-hand column of text, about 0.5 inch (12 mm) below the title area and no more than 3.125 inches (80 mm) in length. Leave a 0.5 inch (12 mm) space between the end of the abstract and the beginning of the main text. The abstract should contain about 100 to 150 words, and should be identical to the abstract text submitted electronically along with the paper cover sheet. All manuscripts must be in English, printed in black ink.
+\end{abstract}
+
+\section{Introduction}
+\label{sec:intro}
+
+These guidelines include complete descriptions of the fonts, spacing, and related information for producing your proceedings manuscripts.
+
+\section{Formatting your paper}
+\label{sec:format}
+
+All printed material, including text, illustrations, and charts, must be kept within a print area of 7 inches (178 mm) wide by 9 inches (229 mm) high. Do not write or print anything outside the print area. The top margin must be 1 inch (25 mm), except for the title page, and the left margin must be 0.75 inch (19 mm). All \emph{text} must be in a two-column format. Columns are to be 3.39 inches (86 mm) wide, with a 0.24 inch (6 mm) space between them. Text must be fully justified.
+
+\section{Page title section}
+\label{sec:pagestyle}
+
+The paper title (on the first page) should begin 1.38 inches (35 mm) from the top edge of the page, centered, completely capitalized, and in Times 14-point, boldface type. The authors' name(s) and affiliation(s) appear below the title in capital and lower case letters. Papers with multiple authors and affiliations may require two or more lines for this information.
+
+\section{Type-style and fonts}
+\label{sec:typestyle}
+
+We strongly encourage you to use Times-Roman font. In addition, this will give the proceedings a more uniform look. Use a font that is no smaller than ten point type throughout the paper, including figure captions.
+
+This is a minimum spacing; 2.75 lines/cm (7 lines/inch) will make the paper much more readable. Larger type sizes require correspondingly larger vertical spacing. Please do not double-space your paper. True-Type 1 fonts are preferred.
+
+The first paragraph in each section should not be indented, but all the following paragraphs within the section should be indented as these paragraphs demonstrate.
+
+\section{Major headings}
+\label{sec:majhead}
+
+Major headings, for example, "1. Introduction", should appear in all capital letters, bold face if possible, centered in the column, with one blank line before, and one blank line after. Use a period (".") after the heading number, not a colon.
+
+\subsection{Subheadings}
+\label{ssec:subhead}
+
+Subheadings should appear in lower case (initial word capitalized) in boldface. They should start at the left margin on a separate line.
+
+\subsubsection{Sub-subheadings}
+\label{sssec:subsubhead}
+
+Sub-subheadings, as in this paragraph, are discouraged. However, if you must use them, they should appear in lower case (initial word capitalized) and start at the left margin on a separate line, with paragraph text beginning on the following line. They should be in italics.
+
+\section{Printing your paper}
+\label{sec:print}
+
+If the last page of your paper is only partially filled, arrange the columns so that they are evenly balanced if possible, rather than having one long column.
+
+In \LaTeX, to start a new column (but not a new page) and help balance the last-page column lengths, you can use the command \verb|\pagebreak| as demonstrated on this page (see the \LaTeX source below).
+
+\section{Illustrations, graphs, and photographs}
+\label{sec:illust}
+
+Illustrations must appear within the designated margins. They may span the two columns. If possible, position illustrations at the top of columns, rather than in the middle or at the bottom. Caption and number every illustration.
+
+Since there are many ways, often incompatible, of including images in a \LaTeX document, below is an example of how to do this.
+
+\begin{figure}[htb]
+\fbox{\rule{0pt}{4cm}\rule{0.97\columnwidth}{0pt}}
+\caption{Example of placing a figure with experimental results.}
+\label{fig:res}
+\end{figure}
+
+% To start a new column (but not a new page) and help balance the last-page
+% column length use \vfill\pagebreak.
+% -------------------------------------------------------------------------
+\vfill
+\pagebreak
+
+\section{Footnotes}
+\label{sec:foot}
+
+Use footnotes sparingly (or not at all!) and place them at the bottom of the column on the page on which they are referenced. Use Times 9-point type, single-spaced. To help your readers, avoid using footnotes altogether and include necessary peripheral observations in the text (within parentheses, if you prefer, as in this sentence).
+
+\section{References}
+\label{sec:ref}
+
+List and number all bibliographical references at the end of the paper. References may be numbered (either alphabetically or in order of appearance) or follow the author–year citation style (e.g., using the \texttt{natbib} package). If you use a numeric style, cite references using square brackets, e.g., \cite{C2}. If you use an author–year style, cite using round brackets.
+
+\bibliographystyle{IEEEbib}
+\bibliography{template}
+
+\newpage
+
+\section*{Declaration of use of generative AI}
+
+This declaration \textbf{must} be filled out and included as the \textbf{final page} of the document. The questions apply to all parts of the work, including research, project writing, and coding.
+\begin{itemize}
+\item I/we have used generative AI tools: [yes / no]
+\end{itemize}
+If you answered \emph{yes}, please complete the following sections. List the generative AI tools you have used:
+\begin{itemize}
+\item
+\end{itemize}
+Describe how the tools were used:
+\begin{description}
+\item[What did you use the tool(s) for?]
+\item[At what stage(s) of the process did you use the tool(s)?]
+\item[How did you use or incorporate the generated output?]
+\end{description}
+
+\end{document}
